@@ -29,7 +29,12 @@
 #---------------------------------------------------------------------------
 # This is the fortran compiler used for fortran programs
 #---------------------------------------------------------------------------
-F77 = f77
+ifeq ($(compiler), GNU)
+    F77 = gfortran
+else ifeq ($(compiler), INTEL)
+    F77 = ifort
+endif
+
 # This links fortran programs; usually the same as ${F77}
 FLINK	= $(F77)
 
@@ -46,14 +51,29 @@ F_INC =
 #---------------------------------------------------------------------------
 # Global *compile time* flags for Fortran programs
 #---------------------------------------------------------------------------
-FFLAGS	= -O
+ifeq ($(opt), 1)
+    FFLAGS	= -O1
+else ifeq ($(opt), 2)
+    FFLAGS = -O2
+else ifeq ($(opt), 3)
+    FFLAGS = -O3
+else ifeq ($(opt), S)
+    FFLAGS = -Os
+else ifeq ($(opt), F)
+    FFLAGS = -Ofast
+endif
+
+FFLAGS += -fopenmp
+
+ifeq ($(vect), 1)
+    FFLAGS += -ftree-vectorize
+endif
 
 #---------------------------------------------------------------------------
 # Global *link time* flags. Flags for increasing maximum executable 
 # size usually go here. 
 #---------------------------------------------------------------------------
-FLINKFLAGS = -O
-
+FLINKFLAGS = $(FFLAGS)
 
 #---------------------------------------------------------------------------
 # Parallel C:
@@ -75,7 +95,12 @@ FLINKFLAGS = -O
 #---------------------------------------------------------------------------
 # This is the C compiler used for C programs
 #---------------------------------------------------------------------------
-CC = cc
+ifeq ($(compiler), GNU)
+    CC = gcc
+else ifeq ($(compiler), INTEL)
+    CC = icc
+endif
+
 # This links C programs; usually the same as ${CC}
 CLINK	= $(CC)
 
@@ -92,14 +117,29 @@ C_INC =
 #---------------------------------------------------------------------------
 # Global *compile time* flags for C programs
 #---------------------------------------------------------------------------
-CFLAGS	= -O
+ifeq ($(opt), 1)
+    CFLAGS	= -O1
+else ifeq ($(opt), 2)
+    CFLAGS = -O2
+else ifeq ($(opt), 3)
+    CFLAGS = -O3
+else ifeq ($(opt), S)
+    CFLAGS = -Os
+else ifeq ($(opt), F)
+    CFLAGS = -Ofast
+endif
+
+CFLAGS += -fopenmp
+
+ifeq ($(vect), 1)
+    CFLAGS += -ftree-vectorize
+endif
 
 #---------------------------------------------------------------------------
 # Global *link time* flags. Flags for increasing maximum executable 
 # size usually go here. 
 #---------------------------------------------------------------------------
-CLINKFLAGS = -O
-
+CLINKFLAGS = $(CFLAGS)
 
 #---------------------------------------------------------------------------
 # Utilities C:
