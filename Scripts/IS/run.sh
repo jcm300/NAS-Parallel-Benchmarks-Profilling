@@ -6,7 +6,19 @@
 #PBS -q mei
 
 function getB(){
-    sar -u 1 > sar.txt &
+    sar -u 1 > sarU_$1_$2_$3_$4.txt &
+    ../bin/is.A.x
+    vmstat 1 > vmstat_$1_$2_$3_$4.txt &
+    ../bin/is.A.x
+    pidstat -u 1 > pidstatU_$1_$2_$3_$4.txt &
+    ../bin/is.A.x
+    pidstat -r 1 > pidstatR_$1_$2_$3_$4.txt &
+    ../bin/is.A.x
+    vmstat -d 1 > vmstatD_$1_$2_$3_$4.txt &
+    ../bin/is.A.x
+    sar -n DEV > sarNDEV_$1_$2_$3_$4.txt &
+    ../bin/is.A.x
+    sar -n EDEV > sarNEDEV_$1_$2_$3_$4.txt &
     ../bin/is.A.x
     rm ../bin/is.A.x
 }
@@ -18,7 +30,7 @@ function bench(){
         make compiler=$1 opt=$2 CLASS=$4
     fi
 
-    getB
+    getB $1 $2 $3 $4
     make clean
 }
 
