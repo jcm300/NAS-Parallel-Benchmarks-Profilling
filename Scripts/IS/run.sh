@@ -5,45 +5,51 @@
 #PBS -l nodes=1:ppn=1
 #PBS -q mei
 
-cd ../Kernels/SEQ/IS
+function getB(){
+    sar -u 1 > sar.txt &
+    ../bin/is.A.x
+    rm ../bin/is.A.x
+}
 
+function bench(){
+    if [[ $vect -eq $3 ]]; then
+        make compiler=$1 opt=$2 vect=1 CLASS=$4
+    else
+        make compiler=$1 opt=$2 CLASS=$4
+    fi
+
+    getB
+    make clean
+}
+
+cd ../../Kernels/SEQ/IS
 
 #GNU compiler
 
 #-O1
-make compiler=GNU opt=1 CLASS=
-
+bench GNU 1 0 A
 #-O2
-make compiler=GNU opt=2 CLASS=
-
+bench GNU 2 0 A
 #-O3
-make compiler=GNU opt=3 CLASS=
-
+bench GNU 3 0 A
 #-Os
-make compiler=GNU opt=S CLASS=
-
+bench GNU S 0 A
 #-Ofast
-make compiler=GNU opt=F CLASS=
-
+bench GNU F 0 A
 #-02 -ftree-vectorize
-make compiler=GNU opt=2 vect=1 CLASS=
+bench GNU 2 1 A
 
 #Intel compiler
 
 #-O1
-make compiler=INTEL opt=1 CLASS=
-
+bench INTEL 1 0 A
 #-O2
-make compiler=INTEL opt=2 CLASS=
-
+bench INTEL 2 0 A
 #-O3
-make compiler=INTEL opt=3 CLASS=
-
+bench INTEL 3 0 A
 #-Os
-make compiler=INTEL opt=S CLASS=
-
+bench INTEL S 0 A
 #-Ofast
-make compiler=INTEL opt=F CLASS=
-
+bench INTEL F 0 A
 #-02 -ftree-vectorize
-make compiler=INTEL opt=2 vect=1 CLASS=
+bench INTEL 2 1 A
