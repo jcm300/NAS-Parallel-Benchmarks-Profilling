@@ -42,9 +42,9 @@ function getB(){
 
 function bench(){
     if [[ $vect -eq $3 ]]; then
-        make compiler=$1 opt=$2 vect=1 CLASS=$4
+        make COMPILER_T=$1 OPT=$2 VECT=1 CLASS=$4
     else
-        make compiler=$1 opt=$2 CLASS=$4
+        make COMPILER_T=$1 OPT=$2 CLASS=$4
     fi
 
     getB $1 $2 $3 $4
