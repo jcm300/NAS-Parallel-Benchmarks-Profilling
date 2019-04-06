@@ -1,82 +1,86 @@
 #!/bin/bash
 
 function getB(){
-    mkdir $1_$2_$3_$4_results
-    cd $1_$2_$3_$4_results
-    
-    PIDS=()
-    sar -r 1 -u > cpu_sar.txt &
-    PIDS+=($!)
+    RESULT_DIR=../../../../Scripts/FT/$6/$5/$1_$2_$3_$4_results
+    mkdir -p $RESULT_DIR
 
-    vmstat 1 > mem_vmstat.txt &
-    PIDS+=($!)
+    CMDS=("sar -r 1 -u > $RESULT_DIR/cpu_sar.txt&" 
+    "vmstat 1 > $RESULT_DIR/mem_vmstat.txt" 
+    "pidstat -u 1 > $RESULT_DIR/cpu_pidstat.txt"
+    "pidstat -r 1 > $RESULT_DIR/mem_pidstat.txt"
+    "sar -r 1 > $RESULT_DIR/mem_sar.txt"
+    "iostat -d 1 > $RESULT_DIR/disk_iostat.txt"
+    "vmstat -d 1 > $RESULT_DIR/disk_vmstat.txt"
+    "sar -r 1 -n DEV > $RESULT_DIR/network_usage_sar.txt"
+    "sar -r 1 -n EDEV > $RESULT_DIR/network_saturation_sar.txt")
 
-    pidstat -u 1 > cpu_pidstat.txt &
-    PIDS+=($!)
-
-    pidstat -r 1 > mem_pidstat.txt &
-    PIDS+=($!)
-
-    sar -r 1 > mem_sar.txt &
-    PIDS+=($!)
-
-    iostat -d 1 > disk_iostat.txt &
-    PIDS+=($!)
-
-    vmstat -d 1 > disk_vmstat.txt &
-    PIDS+=($!)
-
-    sar -r 1 -n DEV > network_usage_sar.txt &
-    PIDS+=($!)
-
-    sar -r 1 -n EDEV > network_saturation_sar.txt &
-    PIDS+=($!)
-
-    ../bin/ft.A.x
-
-    for pid in ${PIDS[@]}
+    for (( i = 0; i < ${#CMDS[@]}; i++ ))
     do
+        ${CMDS[$i]}
+        PID=($!)
+        ../bin/ft.A.x
         kill -9 $pid
     done
 }
 
+
 function bench(){
-    if [[ $vect -eq $3 ]]; then
-        make COMPILER_T=$1 OPT=$2 VECT=1 CLASS=$4
+    mkdir ../bin
+
+    if [[ $compiler -eq "GNU" ]]; then
+        module load gcc/5.3.0
     else
-        make COMPILER_T=$1 OPT=$2 CLASS=$4
+        source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
     fi
 
-    getB $1 $2 $3 $4
+    if [[ $vect -eq $3 ]]; then
+        make compiler=$1 opt=$2 vect=1 CLASS=$4 suite
+    else
+        make compiler=$1 opt=$2 CLASS=$4 suite
+    fi
+
+    getB $1 $2 $3 $4 $5 $6
     make clean
 }
 
-#GNU compiler
+function runBench(){
+    #cd ../../Benchmarks/IS_FT/$1/FT
+    cd Benchmarks/IS_FT/$1/FT
 
-#-O1
-bench GNU 1 0 A
-#-O2
-bench GNU 2 0 A
-#-O3
-bench GNU 3 0 A
-#-Os
-bench GNU S 0 A
-#-Ofast
-bench GNU F 0 A
-#-02 -ftree-vectorize
-bench GNU 2 1 A
+    #GNU compiler
 
-#Intel compiler
+    #-O1
+    bench GNU 1 0 A $1 $2
+    #-O2
+    bench GNU 2 0 A $1 $2
+    #-O3
+    bench GNU 3 0 A $1 $2
+    #-Os
+    bench GNU S 0 A $1 $2
+    #-Ofast
+    bench GNU F 0 A $1 $2
+    #-02 -ftree-vectorize
+    bench GNU 2 1 A $1 $2
 
-#-O1
-bench INTEL 1 0 A
-#-O2
-bench INTEL 2 0 A
-#-O3
-bench INTEL 3 0 A
-#-Os
-bench INTEL S 0 A
-#-Ofast
-bench INTEL F 0 A
-#-02 -ftree-vectorize
-bench INTEL 2 1 A
+    #Intel compiler
+
+    #-O1
+    bench INTEL 1 0 A $1 $2
+    #-O2
+    bench INTEL 2 0 A $1 $2
+    #-O3
+    bench INTEL 3 0 A $1 $2
+    #-Os
+    bench INTEL S 0 A $1 $2
+    #-Ofast
+    bench INTEL F 0 A $1 $2
+    #-02 -ftree-vectorize
+    bench INTEL 2 1 A $1 $2
+}
+
+#SEQ
+runBench NPB3.3-SER $1 
+#OMP
+runBench NPB3.3-OMP $1
+#MPI
+runBench NPB3.3-MPI $1

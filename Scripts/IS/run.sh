@@ -56,16 +56,15 @@ function bench(){
     mkdir ../bin
 
     if [[ $compiler -eq "GNU" ]]; then
-        #module load gcc/7.2.0
-        module load gcc/5.3.0 #o 7.2.0 estava a dar erro de load, usar este
+        module load gcc/5.3.0
     else
         source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
     fi
 
     if [[ $vect -eq $3 ]]; then
-        make compiler=$1 opt=$2 vect=1 CLASS=$4
+        make compiler=$1 opt=$2 vect=1 CLASS=$4 suite
     else
-        make compiler=$1 opt=$2 CLASS=$4
+        make compiler=$1 opt=$2 CLASS=$4 suite
     fi
 
     getB $1 $2 $3 $4 $5 $6
@@ -74,7 +73,7 @@ function bench(){
 
 function runBench(){
     #cd ../../Benchmarks/IS_FT/$1/IS
-    cd Benchmarks/IS_FT/$1/IS #no Cluster ao fazer qsub tem de ser assim
+    cd Benchmarks/IS_FT/$1/IS
 
     #GNU compiler
 
