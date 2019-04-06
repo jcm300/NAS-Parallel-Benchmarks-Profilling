@@ -28,62 +28,65 @@ function getB(){
     do
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
-        ./$PROJ_ROOT/Benchmarks/$5/bin/ft.$4.x
+        ../bin/ft.$4.x
         kill -9 $PID
     done
+
 }
 
 
 function bench(){
-    if [[ $1 -eq "GNU" ]]; then
+    mkdir bin
+    if [[ "$1" -eq "GNU" ]]; then
         module load gcc/5.3.0
     else
         source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
     fi
 
-    if [[ $vect -eq $3 ]]; then
-        make compiler=$1 opt=$2 vect=1 suite
-    else
-        make compiler=$1 opt=$2 suite
-    fi
+    make COMPILER_T=$1 OPT=$2 VECT=$3 suite
+
+    cd FT
 
     getB $1 $2 $3 $4 $5 $6
+
+    cd ..
+    rm -r bin
     make clean
 }
 
 function runBench(){
-    cd $PROJ_ROOT/Benchmarks/IS_FT/$1
+    cd $PROJ_ROOT/Benchmarks/IS_FT/$1/
 
     #GNU compiler
 
     #-O1
-    bench GNU 1 0 A $1 $2
+    bench GNU 1 0 B $1 $2
 
     #-O2
-    bench GNU 2 0 A $1 $2
+    bench GNU 2 0 B $1 $2
     #-O3
-    bench GNU 3 0 A $1 $2
+    bench GNU 3 0 B $1 $2
     #-Os
-    bench GNU S 0 A $1 $2
+    bench GNU S 0 B $1 $2
     #-Ofast
-    bench GNU F 0 A $1 $2
+    bench GNU F 0 B $1 $2
     #-02 -ftree-vectorize
-    bench GNU 2 1 A $1 $2
+    bench GNU 2 1 B $1 $2
 
     #Intel compiler
 
     #-O1
-    bench INTEL 1 0 A $1 $2
+    bench INTEL 1 0 B $1 $2
     #-O2
-    bench INTEL 2 0 A $1 $2
+    bench INTEL 2 0 B $1 $2
     #-O3
-    bench INTEL 3 0 A $1 $2
+    bench INTEL 3 0 B $1 $2
     #-Os
-    bench INTEL S 0 A $1 $2
+    bench INTEL S 0 B $1 $2
     #-Ofast
-    bench INTEL F 0 A $1 $2
+    bench INTEL F 0 B $1 $2
     #-02 -ftree-vectorize
-    bench INTEL 2 1 A $1 $2
+    bench INTEL 2 1 B $1 $2
 }
 
 PROJ_ROOT=$PWD
