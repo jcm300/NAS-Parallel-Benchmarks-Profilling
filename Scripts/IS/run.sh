@@ -28,10 +28,10 @@ function getB(){
     do
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
-        if [[ $5 -eq "NPB3.3-MPI" ]]; then
-            ../bin/ft.$4.8
+        if [[ $5 == "NPB3.3-MPI" ]]; then
+            bin/is.$4.8
         else
-            ../bin/ft.$4.x
+            bin/is.$4.x
         fi
         kill -9 $PID
     done
@@ -44,11 +44,8 @@ function bench(){
 
     make COMPILER_T=$1 OPT=$2 VECT=$3 suite
 
-    cd FT
-
     getB $1 $2 $3 $4 $5 $6
 
-    cd ..
     rm -r bin
     make clean
 }
@@ -60,7 +57,6 @@ function runBench(){
 
     #-O1
     bench GNU 1 0 B $1 $2
-
     #-O2
     bench GNU 2 0 B $1 $2
     #-O3
@@ -95,6 +91,7 @@ module load gcc/5.3.0
 module load gnu/openmpi_eth/1.8.2
 module load intel/openmpi_eth/1.8.2 
 source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
+
 #SEQ
 runBench NPB3.3-SER $1 
 #OMP
