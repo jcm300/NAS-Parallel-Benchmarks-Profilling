@@ -141,6 +141,8 @@ ifeq ($(VECT), 1)
     CLINKFLAGS += -ftree-vectorize
 endif
 
+CLINKFLAGS += -fPIC
+
 #---------------------------------------------------------------------------
 # Utilities C:
 #
