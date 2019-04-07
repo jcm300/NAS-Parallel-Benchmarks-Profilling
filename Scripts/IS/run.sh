@@ -1,84 +1,66 @@
-#!/bin/sh
+#!/bin/bash
 
 function getB(){
-    folder=../../../../Scripts/IS/$6/$5/$1_$2_$3_$4_results
-    mkdir -p $folder
+    CUR_RESULT_DIR=$RESULT_DIR/$6/$5/$1_$2_$3_$4_results
+    mkdir -p $CUR_RESULT_DIR
 
-    sar -r 1 -u > $folder/cpu_sar.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
+    CMDS=("sar -r 1 -u"
+    "vmstat 1"
+    "pidstat -u 1"
+    "pidstat -r 1"
+    "sar -r 1"
+    "iostat -d 1"
+    "vmstat -d 1"
+    "sar -r 1 -n DEV"
+    "sar -r 1 -n EDEV")
 
-    vmstat 1 > $folder/mem_vmstat.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
+    OUTPUT_DIR=("$CUR_RESULT_DIR/cpu_sar.txt" 
+    "$CUR_RESULT_DIR/mem_vmstat.txt" 
+    "$CUR_RESULT_DIR/cpu_pidstat.txt"
+    "$CUR_RESULT_DIR/mem_pidstat.txt"
+    "$CUR_RESULT_DIR/mem_sar.txt"
+    "$CUR_RESULT_DIR/disk_iostat.txt"
+    "$CUR_RESULT_DIR/disk_vmstat.txt"
+    "$CUR_RESULT_DIR/network_usage_sar.txt"
+    "$CUR_RESULT_DIR/network_saturation_sar.txt")
 
-    pidstat -u 1 > $folder/cpu_pidstat.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
+    for (( i = 0; i < ${#CMDS[@]}; i++ ))
+    do
+        ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
+        PID=($!)
+        if [[ $5 -eq "NPB3.3-MPI" ]]; then
+            ../bin/ft.$4.8
+        else
+            ../bin/ft.$4.x
+        fi
+        kill -9 $PID
+    done
 
-    pidstat -r 1 > $folder/mem_pidstat.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
-
-    sar -r 1 > $folder/mem_sar.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
-
-    iostat -d 1 > $folder/disk_iostat.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
-
-    vmstat -d 1 > $folder/disk_vmstat.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
-
-    sar -r 1 -n DEV > $folder/network_usage_sar.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
-
-    sar -r 1 -n EDEV > $folder/network_saturation_sar.txt &
-    PID=$!
-    ../bin/is.$4.x
-    kill -9 $PID
-
-    rm ../bin/is.$4.x
 }
 
+
 function bench(){
-    mkdir ../bin
+    mkdir bin
 
-    if [[ $compiler -eq "GNU" ]]; then
-        module load gcc/5.3.0
-    else
-        source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
-    fi
+    make COMPILER_T=$1 OPT=$2 VECT=$3 suite
 
-    if [[ $vect -eq $3 ]]; then
-        make compiler=$1 opt=$2 vect=1 CLASS=$4
-    else
-        make compiler=$1 opt=$2 CLASS=$4
-    fi
+    cd FT
 
     getB $1 $2 $3 $4 $5 $6
+
+    cd ..
+    rm -r bin
     make clean
 }
 
 function runBench(){
-    #cd ../../Benchmarks/IS_FT/$1/IS
-    cd Benchmarks/IS_FT/$1/IS
+    cd $PROJ_ROOT/Benchmarks/IS_FT/$1/
 
     #GNU compiler
 
     #-O1
     bench GNU 1 0 B $1 $2
+
     #-O2
     bench GNU 2 0 B $1 $2
     #-O3
@@ -106,6 +88,13 @@ function runBench(){
     bench INTEL 2 1 B $1 $2
 }
 
+PROJ_ROOT=$PWD
+RESULT_DIR=$PROJ_ROOT/FT_RESULTS
+
+module load gcc/5.3.0
+module load gnu/openmpi_eth/1.8.2
+module load intel/openmpi_eth/1.8.2 
+source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
 #SEQ
 runBench NPB3.3-SER $1 
 #OMP
