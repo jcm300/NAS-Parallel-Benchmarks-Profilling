@@ -37,11 +37,6 @@ function getB(){
 
 function bench(){
     mkdir bin
-    if [[ "$1" -eq "GNU" ]]; then
-        module load gcc/5.3.0
-    else
-        source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
-    fi
 
     make COMPILER_T=$1 OPT=$2 VECT=$3 suite
 
@@ -92,6 +87,10 @@ function runBench(){
 PROJ_ROOT=$PWD
 RESULT_DIR=$PROJ_ROOT/FT_RESULTS
 
+module load gcc/5.3.0
+module load gnu/openmpi_eth/1.8.2
+module load intel/openmpi_eth/1.8.2 
+source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
 #SEQ
 runBench NPB3.3-SER $1 
 #OMP
