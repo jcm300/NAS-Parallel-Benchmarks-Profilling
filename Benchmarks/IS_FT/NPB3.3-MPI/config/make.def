@@ -32,7 +32,7 @@
 ifeq ($(COMPILER_T), INTEL)
     MPIF77 = mpiifort
 else
-    MPIF77 = mpif77
+    MPIF77 = mpifort
 endif
 
 #---------------------------------------------------------------------------
@@ -48,7 +48,7 @@ FMPI_LIB  = -L/usr/local/lib -lmpi
 #---------------------------------------------------------------------------
 # These macros are passed to the compiler
 #---------------------------------------------------------------------------
-FMPI_INC = -I/usr/include
+FMPI_INC = -I/usr/local/include
 
 #---------------------------------------------------------------------------
 # Global *compile time* flags for Fortran programs
@@ -68,6 +68,8 @@ endif
 ifeq ($(VECT), 1)
     FLINKFLAGS += -ftree-vectorize
 endif
+
+FLINKFLAGS += -fIPC
 
 #---------------------------------------------------------------------------
 # Parallel C:
@@ -98,7 +100,7 @@ endif
 #---------------------------------------------------------------------------
 # This links C programs; usually the same as ${CC}
 #---------------------------------------------------------------------------
-CLINK	= mpicc
+CLINK	= $(MPICC)
 
 #---------------------------------------------------------------------------
 # These macros are passed to the linker
