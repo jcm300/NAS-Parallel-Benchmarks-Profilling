@@ -91,7 +91,6 @@ function runBench(){
 
 PROJ_ROOT=$PWD
 RESULT_DIR=$PROJ_ROOT/FT_RESULTS
-mkdir -p $RESULT_DIR
 
 #SEQ
 runBench NPB3.3-SER $1 
