@@ -30,7 +30,7 @@
 # This is the fortran compiler used for Fortran programs
 #---------------------------------------------------------------------------
 ifeq ($(COMPILER_T), INTEL)
-    MPIF77 = ifort
+    MPIF77 = mpiifort
 else
     MPIF77 = mpif77
 endif
@@ -43,7 +43,7 @@ FLINK	= $(MPIF77)
 #---------------------------------------------------------------------------
 # These macros are passed to the linker
 #---------------------------------------------------------------------------
-FMPI_LIB  = -L/usr/local/lib 
+FMPI_LIB  = -L/usr/local/lib -lmpi
 
 #---------------------------------------------------------------------------
 # These macros are passed to the compiler
@@ -90,7 +90,7 @@ endif
 # This is the C compiler used for C programs
 #---------------------------------------------------------------------------
 ifeq ($(COMPILER_T), INTEL)
-    MPICC = icc
+    MPICC = mpiicc
 else
     MPICC = mpicc
 endif
@@ -98,12 +98,12 @@ endif
 #---------------------------------------------------------------------------
 # This links C programs; usually the same as ${CC}
 #---------------------------------------------------------------------------
-CLINK	= $(MPICC)
+CLINK	= mpicc
 
 #---------------------------------------------------------------------------
 # These macros are passed to the linker
 #---------------------------------------------------------------------------
-CMPI_LIB  = -L/usr/local/lib 
+CMPI_LIB  = -L/usr/local/lib -lmpi
 
 #---------------------------------------------------------------------------
 # These macros are passed to the compiler
