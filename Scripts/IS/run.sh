@@ -56,32 +56,32 @@ function runBench(){
     #GNU compiler
 
     #-O1
-    bench GNU 1 0 B $1 $2
+    #bench GNU 1 0 B $1 $2
     #-O2
     bench GNU 2 0 B $1 $2
     #-O3
     bench GNU 3 0 B $1 $2
     #-Os
-    bench GNU S 0 B $1 $2
+    #bench GNU S 0 B $1 $2
     #-Ofast
     bench GNU F 0 B $1 $2
     #-02 -ftree-vectorize
-    bench GNU 2 1 B $1 $2
+    #bench GNU 2 1 B $1 $2
 
     #Intel compiler
 
     #-O1
-    bench INTEL 1 0 B $1 $2
+    #bench INTEL 1 0 B $1 $2
     #-O2
     bench INTEL 2 0 B $1 $2
     #-O3
     bench INTEL 3 0 B $1 $2
     #-Os
-    bench INTEL S 0 B $1 $2
+    #bench INTEL S 0 B $1 $2
     #-Ofast
     bench INTEL F 0 B $1 $2
     #-02 -ftree-vectorize
-    bench INTEL 2 1 B $1 $2
+    #bench INTEL 2 1 B $1 $2
 }
 
 PROJ_ROOT=$PWD
