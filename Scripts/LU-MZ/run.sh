@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function getB(){
-    CUR_RESULT_DIR=$RESULT_DIR/$6/$5/$1_$2_$3_$4_results
+    CUR_RESULT_DIR=$RESULT_DIR/$5/$4/$1_$2_$3_results
     mkdir -p $CUR_RESULT_DIR
 
     CMDS=("sar -r 1 -u"
@@ -28,10 +28,10 @@ function getB(){
     do
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
-        if [[ $5 == "NPB3.3-MPI" ]]; then
-            mpirun -np 8 bin/lu.$4.8
+        if [[ $5 == "NPB3.3-MZ-MPI" ]]; then
+            mpirun -np 8 bin/lu-mz.$4.8
         else
-            ../bin/lu.$4.x
+            ../bin/lu-mz.$3.x
         fi
         kill -9 $PID
     done
@@ -42,11 +42,11 @@ function getB(){
 function bench(){
     mkdir bin
 
-    make COMPILER_T=$1 OPT=$2 VECT=$3 suite
+    make COMPILER_T=$1 OPT=$2 suite
 
     cd LU-MZ
 
-    getB $1 $2 $3 $4 $5 $6
+    getB $1 $2 $3 $4 $5
 
     cd ..
     rm -r bin
@@ -57,35 +57,20 @@ function runBench(){
     cd $PROJ_ROOT/Benchmarks/LU-MZ/$1/
 
     #GNU compiler
-
-    #-O1
-    bench GNU 1 0 B $1 $2
-
     #-O2
-    bench GNU 2 0 B $1 $2
+    bench GNU 2 A $1 $2
     #-O3
-    bench GNU 3 0 B $1 $2
-    #-Os
-    bench GNU S 0 B $1 $2
+    bench GNU 3 A $1 $2
     #-Ofast
-    bench GNU F 0 B $1 $2
-    #-02 -ftree-vectorize
-    bench GNU 2 1 B $1 $2
+    bench GNU F A $1 $2
 
     #Intel compiler
-
-    #-O1
-    bench INTEL 1 0 B $1 $2
     #-O2
-    bench INTEL 2 0 B $1 $2
+    bench INTEL 2 A $1 $2
     #-O3
-    bench INTEL 3 0 B $1 $2
-    #-Os
-    bench INTEL S 0 B $1 $2
+    bench INTEL 3 A $1 $2
     #-Ofast
-    bench INTEL F 0 B $1 $2
-    #-02 -ftree-vectorize
-    bench INTEL 2 1 B $1 $2
+    bench INTEL F A $1 $2
 }
 
 PROJ_ROOT=$PWD

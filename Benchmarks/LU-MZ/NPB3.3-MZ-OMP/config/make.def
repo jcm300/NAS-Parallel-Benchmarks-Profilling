@@ -53,20 +53,12 @@ F_INC =
 #---------------------------------------------------------------------------
 # Global *compile time* flags for Fortran programs
 #---------------------------------------------------------------------------
-ifeq ($(opt), 1)
-    FFLAGS	= -O1
-else ifeq ($(opt), 2)
+ifeq ($(opt), 2)
     FFLAGS = -O2
 else ifeq ($(opt), 3)
     FFLAGS = -O3
-else ifeq ($(opt), S)
-    FFLAGS = -Os
 else ifeq ($(opt), F)
     FFLAGS = -Ofast
-endif
-
-ifeq ($(vect), 1)
-    FFLAGS += -ftree-vectorize
 endif
 
 FFLAGS += -fopenmp
@@ -134,20 +126,12 @@ C_INC =
 # _LARGEFILE64_SOURCE - are standard compiler flags which allow to work with
 # files larger than 2GB.
 #---------------------------------------------------------------------------
-ifeq ($(opt), 1)
-    CFLAGS	= -O1
-else ifeq ($(opt), 2)
+ifeq ($(opt), 2)
     CFLAGS = -O2
 else ifeq ($(opt), 3)
     CFLAGS = -O3
-else ifeq ($(opt), S)
-    CFLAGS = -Os
 else ifeq ($(opt), F)
     CFLAGS = -Ofast
-endif
-
-ifeq ($(vect), 1)
-    CFLAGS += -ftree-vectorize
 endif
 
 CFLAGS += -fopenmp

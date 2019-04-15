@@ -53,23 +53,15 @@ FMPI_INC = -I/usr/local/include
 #---------------------------------------------------------------------------
 # Global *compile time* flags for Fortran programs
 #---------------------------------------------------------------------------
-ifeq ($(OPT), 1)
-    FLINKFLAGS	= -O1
-else ifeq ($(OPT), 2)
+ifeq ($(OPT), 2)
     FLINKFLAGS = -O2
 else ifeq ($(OPT), 3)
     FLINKFLAGS = -O3
-else ifeq ($(OPT), S)
-    FLINKFLAGS = -Os
 else ifeq ($(OPT), F)
     FLINKFLAGS = -Ofast
 endif
 
-ifeq ($(VECT), 1)
-    FLINKFLAGS += -ftree-vectorize
-endif
-
-FLINKFLAGS += -fIPC
+FLINKFLAGS += -fIPC -fopenmp
 FFLAGS = $(FLINKFLAGS)
 
 #---------------------------------------------------------------------------
@@ -128,23 +120,15 @@ CMPI_INC = -I/usr/local/include
 # _LARGEFILE64_SOURCE - are standard compiler flags which allow to work with
 # files larger than 2GB.
 #---------------------------------------------------------------------------
-ifeq ($(OPT), 1)
-    CLINKFLAGS	= -O1
-else ifeq ($(OPT), 2)
+ifeq ($(OPT), 2)
     CLINKFLAGS = -O2
 else ifeq ($(OPT), 3)
     CLINKFLAGS = -O3
-else ifeq ($(OPT), S)
-    CLINKFLAGS = -Os
 else ifeq ($(OPT), F)
     CLINKFLAGS = -Ofast
 endif
 
-ifeq ($(VECT), 1)
-    CLINKFLAGS += -ftree-vectorize
-endif
-
-CLINKFLAGS += -fPIC
+CLINKFLAGS += -fPIC -fopenmp
 CFLAGS = $(CLINKFLAGS)
 
 #---------------------------------------------------------------------------
