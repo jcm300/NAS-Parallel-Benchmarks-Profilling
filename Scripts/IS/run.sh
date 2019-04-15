@@ -29,7 +29,7 @@ function getB(){
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
         if [[ $5 == "NPB3.3-MPI" ]]; then
-            bin/is.$4.8
+            mpirun -np 8 bin/is.$4.8
         else
             if [[ $5 == "NPB3.3-OMP" ]]; then
                 setenv OMP_NUM_THREADS 8
