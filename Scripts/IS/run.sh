@@ -29,11 +29,14 @@ function getB(){
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
         if [[ $5 == "NPB3.3-MPI" ]]; then
-            mpirun -np 8 bin/is.$4.8
-        else
-            if [[ $5 == "NPB3.3-OMP" ]]; then
-                setenv OMP_NUM_THREADS 8
+            if [[ $1 == "INTEL" ]]; then
+                module load intel/openmpi_eth/1.8.2
+                mpirun -n 8 bin/is.$4.8           
+            else
+                module load gnu/openmpi_eth/1.8.2
+                mpirun -np 8 bin/is.$4.8
             fi
+        else
             bin/is.$4.x
         fi
         kill -9 $PID
@@ -91,8 +94,6 @@ PROJ_ROOT=$PWD
 RESULT_DIR=$PROJ_ROOT/FT_RESULTS
 
 module load gcc/5.3.0
-module load gnu/openmpi_eth/1.8.2
-module load intel/openmpi_eth/1.8.2 
 source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
 
 #SEQ
