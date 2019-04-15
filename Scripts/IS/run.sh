@@ -31,6 +31,9 @@ function getB(){
         if [[ $5 == "NPB3.3-MPI" ]]; then
             bin/is.$4.8
         else
+            if [[ $5 == "NPB3.3-OMP" ]]; then
+                setenv OMP_NUM_THREADS 8
+            fi
             bin/is.$4.x
         fi
         kill -9 $PID
@@ -51,7 +54,7 @@ function bench(){
 }
 
 function runBench(){
-    cd $PROJ_ROOT/Benchmarks/IS_FT/$1/
+    cd $PROJ_ROOT/Benchmarks/IS/$1/
 
     #GNU compiler
 

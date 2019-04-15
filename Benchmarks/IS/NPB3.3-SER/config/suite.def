@@ -10,5 +10,4 @@
 #  are likely not practical to run in serial. See README.install).
 # No blank lines.
 # The following example builds serial sample sizes of all benchmarks.
-ft	B
 is	B

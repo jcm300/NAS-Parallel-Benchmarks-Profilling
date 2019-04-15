@@ -70,6 +70,7 @@ ifeq ($(VECT), 1)
 endif
 
 FLINKFLAGS += -fIPC
+FFLAGS = $(FLINKFLAGS)
 
 #---------------------------------------------------------------------------
 # Parallel C:
@@ -144,6 +145,7 @@ ifeq ($(VECT), 1)
 endif
 
 CLINKFLAGS += -fPIC
+CFLAGS = $(CLINKFLAGS)
 
 #---------------------------------------------------------------------------
 # Utilities C:
