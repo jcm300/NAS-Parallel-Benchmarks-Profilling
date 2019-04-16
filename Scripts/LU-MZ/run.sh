@@ -29,7 +29,7 @@ function getB(){
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
         if [[ $5 == "NPB3.3-MZ-MPI" ]]; then
-            mpirun -np 8 bin/lu-mz.$4.8
+            mpirun -np 8 ../bin/lu-mz.$3.8
         else
             ../bin/lu-mz.$3.x
         fi
@@ -42,9 +42,8 @@ function getB(){
 function bench(){
     mkdir bin
 
-    make COMPILER_T=$1 OPT=$2 suite
-
     cd LU-MZ
+    make COMPILER_T=$1 OPT=$2 CLASS=$3
 
     getB $1 $2 $3 $4 $5
 
@@ -54,8 +53,9 @@ function bench(){
 }
 
 function runBench(){
-    cd $PROJ_ROOT/Benchmarks/LU-MZ/$1/
+    cd $PROJ_ROOT/Benchmarks/LU-MZ/$1
 
+    # CLASS A
     #GNU compiler
     #-O2
     bench GNU 2 A $1 $2
@@ -71,6 +71,24 @@ function runBench(){
     bench INTEL 3 A $1 $2
     #-Ofast
     bench INTEL F A $1 $2
+
+    # CLASS B
+    #GNU compiler
+    #-O2
+    bench GNU 2 B $1 $2
+    #-O3
+    bench GNU 3 B $1 $2
+    #-Ofast
+    bench GNU F B $1 $2
+
+    #Intel compiler
+    #-O2
+    bench INTEL 2 B $1 $2
+    #-O3
+    bench INTEL 3 B $1 $2
+    #-Ofast
+    bench INTEL F B $1 $2
+
 }
 
 PROJ_ROOT=$PWD
@@ -85,4 +103,4 @@ runBench NPB3.3-MZ-SER $1
 #OMP
 runBench NPB3.3-MZ-OMP $1
 #MPI
-runBench NPB3.3-MZ-MPI $1
+#runBench NPB3.3-MZ-MPI $1

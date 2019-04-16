@@ -48,7 +48,7 @@ FMPI_LIB  = -L/usr/local/lib -lmpi
 #---------------------------------------------------------------------------
 # These macros are passed to the compiler
 #---------------------------------------------------------------------------
-FMPI_INC = -I/usr/local/include
+FMPI_INC = -I/usr/include
 
 #---------------------------------------------------------------------------
 # Global *compile time* flags for Fortran programs
