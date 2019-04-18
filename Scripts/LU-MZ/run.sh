@@ -14,8 +14,8 @@ function getB(){
     "sar -r 1 -n DEV"
     "sar -r 1 -n EDEV")
 
-    OUTPUT_DIR=("$CUR_RESULT_DIR/cpu_sar.txt" 
-    "$CUR_RESULT_DIR/mem_vmstat.txt" 
+    OUTPUT_DIR=("$CUR_RESULT_DIR/cpu_sar.txt"
+    "$CUR_RESULT_DIR/mem_vmstat.txt"
     "$CUR_RESULT_DIR/cpu_pidstat.txt"
     "$CUR_RESULT_DIR/mem_pidstat.txt"
     "$CUR_RESULT_DIR/mem_sar.txt"
@@ -40,6 +40,7 @@ function getB(){
 
 
 function bench(){
+    rm -rf bin
     mkdir bin
 
     cd LU-MZ
@@ -48,7 +49,6 @@ function bench(){
     getB $1 $2 $3 $4 $5
 
     cd ..
-    rm -r bin
     make clean
 }
 
@@ -96,11 +96,11 @@ RESULT_DIR=$PROJ_ROOT/LU-MZ_RESULTS
 
 module load gcc/5.3.0
 module load gnu/openmpi_eth/1.8.2
-module load intel/openmpi_eth/1.8.2 
+module load intel/openmpi_eth/1.8.2
 source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
 #SEQ
-runBench NPB3.3-MZ-SER $1 
+runBench NPB3.3-MZ-SER $1
 #OMP
 runBench NPB3.3-MZ-OMP $1
 #MPI
-#runBench NPB3.3-MZ-MPI $1
+runBench NPB3.3-MZ-MPI $1
