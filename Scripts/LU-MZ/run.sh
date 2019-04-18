@@ -44,7 +44,11 @@ function bench(){
     mkdir bin
 
     cd LU-MZ
-    make COMPILER_T=$1 OPT=$2 CLASS=$3
+    if [[ $5 = "NPB3.3-MZ-MPI" ]]; then
+        make COMPILER_T=$1 OPT=$2 NPROCS=8 CLASS=$3
+    else
+        make COMPILER_T=$1 OPT=$2 CLASS=$3
+    fi
 
     getB $1 $2 $3 $4 $5
 
@@ -99,8 +103,8 @@ module load gnu/openmpi_eth/1.8.2
 module load intel/openmpi_eth/1.8.2
 source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
 #SEQ
-runBench NPB3.3-MZ-SER $1
+#runBench NPB3.3-MZ-SER $1
 #OMP
 runBench NPB3.3-MZ-OMP $1
 #MPI
-runBench NPB3.3-MZ-MPI $1
+#runBench NPB3.3-MZ-MPI $1
