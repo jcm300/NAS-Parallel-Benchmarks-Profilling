@@ -97,6 +97,16 @@ echo "%cache:" >> $resFolder
 awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($7 ~ /[0-9]+/){sub(/\./,",",$7); print $7}}' mem_vmstat.txt >> $resFolder
 echo "" >> $resFolder
 
+#mem_vmstat si
+echo "%cache:" >> $resFolder
+awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($8 ~ /[0-9]+/){sub(/\./,",",$8); print $8}}' mem_vmstat.txt >> $resFolder
+echo "" >> $resFolder
+
+#mem_vmstat so
+echo "%cache:" >> $resFolder
+awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($9 ~ /[0-9]+/){sub(/\./,",",$9); print $9}}' mem_vmstat.txt >> $resFolder
+echo "" >> $resFolder
+
 #network_saturation rxdrop/s
 echo "%rxdrop/s:" >> $resFolder
 awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){sub(/\./,",",$6); print $6}}' network_saturation_sar.txt >> $resFolder

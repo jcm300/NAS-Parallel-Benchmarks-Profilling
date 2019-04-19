@@ -31,7 +31,7 @@ function getB(){
         if [[ $5 == "NPB3.3-MPI" ]]; then
             if [[ $1 == "INTEL" ]]; then
                 module load intel/openmpi_eth/1.8.2
-                mpirun -n 8 bin/is.$4.8           
+                mpiexec -np 8 bin/is.$4.8           
             else
                 module load gnu/openmpi_eth/1.8.2
                 mpirun -np 8 bin/is.$4.8
