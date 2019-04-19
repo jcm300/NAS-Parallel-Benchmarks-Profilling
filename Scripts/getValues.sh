@@ -98,12 +98,12 @@ awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($7 ~ /[0-9]+/){sub(/\./,",",$7); pr
 echo "" >> $resFolder
 
 #mem_vmstat si
-echo "%cache:" >> $resFolder
+echo "%si:" >> $resFolder
 awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($8 ~ /[0-9]+/){sub(/\./,",",$8); print $8}}' mem_vmstat.txt >> $resFolder
 echo "" >> $resFolder
 
 #mem_vmstat so
-echo "%cache:" >> $resFolder
+echo "%so:" >> $resFolder
 awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($9 ~ /[0-9]+/){sub(/\./,",",$9); print $9}}' mem_vmstat.txt >> $resFolder
 echo "" >> $resFolder
 
