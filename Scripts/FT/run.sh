@@ -31,20 +31,23 @@ function getB(){
 	if [[ $5 == "NPB3.3-MPI" ]]; then
 	    if [[ $1 == "INTEL" ]]; then
 	        if [[ $6 == "ISr641Myri" ]]; then
-                    module load intel/openmpi_mx/1.8.2
+                module load intel/openmpi_mx/1.8.2
+                /share/apps/openmpi/1.8.2/intel/mx/bin/mpirun -np 8 ./ft.$4.8
 	        else
-                    module load intel/openmpi_eth/1.8.2
+                module load intel/openmpi_eth/1.8.2
+                /share/apps/openmpi/1.8.2/intel/eth/bin/mpirun -np 8 ./ft.$4.8
 	        fi
 	    else
 	    	if [[ $6 == "ISr641Myri" ]]; then
-			module load gnu/openmpi_mx/1.8.2
-		else
-			module load gnu/openmpi_eth/1.8.2
-		fi
+			    module load gnu/openmpi_mx/1.8.2
+                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun -np 8 ./ft.$4.8
+		    else
+			    module load gnu/openmpi_eth/1.8.2
+                /share/apps/openmpi/1.8.2/gnu/eth/bin/mpirun -np 8 ./ft.$4.8
+		    fi
 	    fi
-	    mpirun -np 8 ft.$4.8
 	else
-            ./ft.$4.x
+        ./ft.$4.x
 	fi
         kill -9 $PID
     done
@@ -70,6 +73,8 @@ function bench(){
 function runBench(){
     cd $PROJ_ROOT/Benchmarks/FT/$1/
 
+    #Class A
+
     #GNU compiler
 
     #-O2
@@ -87,6 +92,26 @@ function runBench(){
     bench INTEL 3 0 A $1 $2
     #-Ofast
     bench INTEL F 0 A $1 $2
+
+    #Class B
+
+    #GNU compiler
+
+    #-O2
+    bench GNU 2 0 B $1 $2
+    #-O3
+    bench GNU 3 0 B $1 $2
+    #-OfBst
+    bench GNU F 0 B $1 $2
+
+    #Intel compiler
+
+    #-O2
+    bench INTEL 2 0 B $1 $2
+    #-O3
+    bench INTEL 3 0 B $1 $2
+    #-OfBst
+    bench INTEL F 0 B $1 $2
 }
 
 PROJ_ROOT=$PWD
