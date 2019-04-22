@@ -10,4 +10,4 @@
 # No blank lines. 
 # The following example builds sample sizes of all benchmarks. 
 ft	A 8
-ft  B 8
+ft	B 8

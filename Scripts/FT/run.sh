@@ -30,17 +30,17 @@ function getB(){
         PID=($!)
 	if [[ $5 == "NPB3.3-MPI" ]]; then
 	    if [[ $1 == "INTEL" ]]; then
-	        if [[ $6 == "ISr641Myri" ]]; then
+	        if [[ $6 == "FTr641Myri" ]]; then
                 module load intel/openmpi_mx/1.8.2
-                /share/apps/openmpi/1.8.2/intel/mx/bin/mpirun -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/intel/mx/bin/mpirun btl mx -np 8 ./ft.$4.8
 	        else
                 module load intel/openmpi_eth/1.8.2
                 /share/apps/openmpi/1.8.2/intel/eth/bin/mpirun -np 8 ./ft.$4.8
 	        fi
 	    else
-	    	if [[ $6 == "ISr641Myri" ]]; then
+	    	if [[ $6 == "FTr641Myri" ]]; then
 			    module load gnu/openmpi_mx/1.8.2
-                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun btl mx -np 8 ./ft.$4.8
 		    else
 			    module load gnu/openmpi_eth/1.8.2
                 /share/apps/openmpi/1.8.2/gnu/eth/bin/mpirun -np 8 ./ft.$4.8
@@ -119,9 +119,15 @@ RESULT_DIR=$PROJ_ROOT/FT_RESULTS
 
 module load gcc/5.3.0
 source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
-#SEQ
-runBench NPB3.3-SER $1 
-#OMP
-runBench NPB3.3-OMP $1
-#MPI
-runBench NPB3.3-MPI $1
+
+if [[ $1 == "FTr641Myri" ]]; then
+    #MPI
+    runBench NPB3.3-MPI $1
+else
+    #SEQ
+    runBench NPB3.3-SER $1 
+    #OMP
+    runBench NPB3.3-OMP $1
+    #MPI
+    runBench NPB3.3-MPI $1
+fi

@@ -11,3 +11,4 @@
 # No blank lines.
 # The following example builds serial sample sizes of all benchmarks.
 ft	A
+ft	B
