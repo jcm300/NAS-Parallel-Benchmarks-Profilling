@@ -40,7 +40,7 @@ function getB(){
 	    else
 	    	if [[ $6 == "FTr641Myri" ]]; then
 			    module load gnu/openmpi_mx/1.8.2
-                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun --map-by node btl mx -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun --map-by node --mca mtl mx --mca pml cm -np 8 ./ft.$4.8
 		    else
 			    module load gnu/openmpi_eth/1.8.2
                 /share/apps/openmpi/1.8.2/gnu/eth/bin/mpirun --map-by node -np 8 ./ft.$4.8
