@@ -32,18 +32,18 @@ function getB(){
 	    if [[ $1 == "INTEL" ]]; then
 	        if [[ $6 == "FTr641Myri" ]]; then
                 module load intel/openmpi_mx/1.8.2
-                /share/apps/openmpi/1.8.2/intel/mx/bin/mpirun btl mx -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/intel/mx/bin/mpirun -rr -genv I_MPI_FABRICS mx -np 8 ./ft.$4.8
 	        else
                 module load intel/openmpi_eth/1.8.2
-                /share/apps/openmpi/1.8.2/intel/eth/bin/mpirun -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/intel/eth/bin/mpirun -rr -np 8 ./ft.$4.8
 	        fi
 	    else
 	    	if [[ $6 == "FTr641Myri" ]]; then
 			    module load gnu/openmpi_mx/1.8.2
-                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun btl mx -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/gnu/mx/bin/mpirun --map-by node btl mx -np 8 ./ft.$4.8
 		    else
 			    module load gnu/openmpi_eth/1.8.2
-                /share/apps/openmpi/1.8.2/gnu/eth/bin/mpirun -np 8 ./ft.$4.8
+                /share/apps/openmpi/1.8.2/gnu/eth/bin/mpirun --map-by node -np 8 ./ft.$4.8
 		    fi
 	    fi
 	else

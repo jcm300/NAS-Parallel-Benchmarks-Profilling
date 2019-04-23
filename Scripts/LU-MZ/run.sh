@@ -29,7 +29,11 @@ function getB(){
         ${CMDS[$i]} > ${OUTPUT_DIR[$i]} &
         PID=($!)
         if [[ $4 == "NPB3.3-MZ-MPI" ]]; then
-            mpirun -np 8 ../bin/lu-mz.$3.8
+            if [[ $1 == "INTEL" ]]; then
+                mpirun -rr -np 8 ../bin/lu-mz.$3.8
+            else
+                mpirun --map-by node -np 8 ../bin/lu-mz.$3.8
+            fi
         else
             ../bin/lu-mz.$3.x
         fi
@@ -45,6 +49,13 @@ function bench(){
 
     cd LU-MZ
     if [[ $4 == "NPB3.3-MZ-MPI" ]]; then
+        if [[ $1 == "INTEL" ]]; then
+            module load intel/openmpi_eth/1.8.2
+            source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
+        else
+            module load gcc/5.3.0
+            module load gnu/openmpi_eth/1.8.2
+        fi
         make COMPILER_T=$1 OPT=$2 NPROCS=8 CLASS=$3
     else
         make COMPILER_T=$1 OPT=$2 CLASS=$3
@@ -59,52 +70,30 @@ function bench(){
 function runBench(){
     cd $PROJ_ROOT/Benchmarks/LU-MZ/$1
 
-    # CLASS A
     #GNU compiler
     #-O2
-    bench GNU 2 A $1 $2
+    bench GNU 2 $3 $1 $2
     #-O3
-    bench GNU 3 A $1 $2
+    bench GNU 3 $3 $1 $2
     #-Ofast
-    bench GNU F A $1 $2
+    bench GNU F $3 $1 $2
 
     #Intel compiler
     #-O2
-    bench INTEL 2 A $1 $2
+    bench INTEL 2 $3 $1 $2
     #-O3
-    bench INTEL 3 A $1 $2
+    bench INTEL 3 $3 $1 $2
     #-Ofast
-    bench INTEL F A $1 $2
-
-    # CLASS B
-    #GNU compiler
-    #-O2
-    bench GNU 2 B $1 $2
-    #-O3
-    bench GNU 3 B $1 $2
-    #-Ofast
-    bench GNU F B $1 $2
-
-    #Intel compiler
-    #-O2
-    bench INTEL 2 B $1 $2
-    #-O3
-    bench INTEL 3 B $1 $2
-    #-Ofast
-    bench INTEL F B $1 $2
+    bench INTEL F $3 $1 $2
 
 }
 
 PROJ_ROOT=$PWD
 RESULT_DIR=$PROJ_ROOT/LU-MZ_RESULTS
 
-module load gcc/5.3.0
-module load gnu/openmpi_eth/1.8.2
-module load intel/openmpi_eth/1.8.2
-source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
 #SEQ
-runBench NPB3.3-MZ-SER $1
+runBench NPB3.3-MZ-SER $1 $2
 #OMP
-runBench NPB3.3-MZ-OMP $1
+runBench NPB3.3-MZ-OMP $1 $2
 #MPI
-runBench NPB3.3-MZ-MPI $1
+runBench NPB3.3-MZ-MPI $1 $2
