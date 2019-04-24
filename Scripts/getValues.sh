@@ -14,171 +14,167 @@ function getStats(){
                                 }else{
                                     median = ( a[c/2] + a[c/2-1] ) / 2;
                                 }
-                                print median;
-                                print a[0];
-                                print a[c-1];
-                            }'
+                                if(a[0]=="") a[0]="und";
+                                if(a[c-1]=="") a[c-1]="und";
+                                if(median=="") median="und";
+                                print median " " a[0] " " a[c-1];
+                             }'
 }
 
-function printInfo(){
-    echo "Info about output:" > $resFolder
-    echo "    Metric" >> $resFolder
-    echo "    Median" >> $resFolder
-    echo "    Min" >> $resFolder
-    echo "    Max" >> $resFolder
-    echo "" >> $resFolder
+function initiate(){
+    cpu_pidstat_cpu=()
+    cpu_sar_iowait=()
+    cpu_sar_idle=()
+    cpu_sar_system=()
+    cpu_sar_user=()
+    disk_iostat_Blk_read=()
+    disk_iostat_Blk_wrtn=()
+    disk_vmstat_reads_merged=()
+    disk_vmstat_reads_ms=()
+    disk_vmstat_writes_merged=()
+    disk_vmstat_writes_ms=()
+    disk_vmstat_io_cur=()
+    disk_vmstat_io_sec=()
+    mem_pidstat_mem=()
+    mem_sar_memused=()
+    mem_vmstat_swpd=()
+    mem_vmstat_free=()
+    mem_vmstat_buff=()
+    mem_vmstat_cache=()
+    mem_vmstat_si=()
+    mem_vmstat_so=()
+    network_saturation_rxdrop=()
+    network_saturation_txdrop=()
+    network_saturation_rxfifo=()
+    network_saturation_txfifo=()
+    network_usage_rxpck=()
+    network_usage_txpck=()
+    network_usage_rxkB=()
+    network_usage_txkB=()
+    network_usage_rxmcst=()
 }
 
 function processOneCase(){
     #cpu_pidstat %cpu
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($8 ~ /(ft|lu-mz)\.(A|B)\.(x|\d+)/){print $6}}' $1/cpu_pidstat.txt)
-    cpu_pidstat_cpu+=$(getStats "$aux")
-    cpu_pidstat_cpu+=$'\n'
+    cpu_pidstat_cpu+=($(getStats "$aux"))
 
     #cpu_sar %iowait
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($6 ~ /[0-9]+\.[0-9]+/){print $6}}' $1/cpu_sar.txt)
-    cpu_sar_iowait+=$(getStats "$aux")
-    cpu_sar_iowait+=$'\n'
+    cpu_sar_iowait+=($(getStats "$aux"))
 
     #cpu_sar %idle
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($8 ~ /[0-9]+\.[0-9]+/ && $7 ~ /[0-9]+\.[0-9]+/){print $8}}' $1/cpu_sar.txt)
-    cpu_sar_idle+=$(getStats "$aux")
-    cpu_sar_idle+=$'\n'
+    cpu_sar_idle+=($(getStats "$aux"))
 
     #cpu_sar %system
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($5 ~ /[0-9]+\.[0-9]+/){print $5}}' $1/cpu_sar.txt)
-    cpu_sar_system+=$(getStats "$aux")
-    cpu_sar_system+=$'\n'
+    cpu_sar_system+=($(getStats "$aux"))
 
     #cpu_sar %user
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($3 ~ /[0-9]+\.[0-9]+/){print $3}}' $1/cpu_sar.txt)
-    cpu_sar_user+=$(getStats "$aux")
-    cpu_sar_user+=$'\n'
+    cpu_sar_user+=($(getStats "$aux"))
 
     #disk_iostat Blk_read/s
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($3 ~ /[0-9]+\.[0-9]+/){print $3}}' $1/disk_iostat.txt)
-    disk_iostat_Blk_read+=$(getStats "$aux")
-    disk_iostat_Blk_read+=$'\n'
+    disk_iostat_Blk_read+=($(getStats "$aux"))
 
     #disk_iostat Blk_wrtn/s
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($4 ~ /[0-9]+\.[0-9]+/){print $4}}' $1/disk_iostat.txt)
-    disk_iostat_Blk_wrtn+=$(getStats "$aux")
-    disk_iostat_Blk_wrtn+=$'\n'
+    disk_iostat_Blk_wrtn+=($(getStats "$aux"))
 
     #disk_vmstat reads_merged
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($1 ~ /sda/){print $3}}' $1/disk_vmstat.txt)
-    disk_vmstat_reads_merged+=$(getStats "$aux")
-    disk_vmstat_reads_merged+=$'\n'
+    disk_vmstat_reads_merged+=($(getStats "$aux"))
 
     #disk_vmstat reads_ms
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($1 ~ /sda/){print $5}}' $1/disk_vmstat.txt)
-    disk_vmstat_reads_ms+=$(getStats "$aux")
-    disk_vmstat_reads_ms+=$'\n'
+    disk_vmstat_reads_ms+=($(getStats "$aux"))
 
     #disk_vmstat writes_merged
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($1 ~ /sda/){print $7}}' $1/disk_vmstat.txt)
-    disk_vmstat_writes_merged+=$(getStats "$aux")
-    disk_vmstat_writes_merged+=$'\n'
+    disk_vmstat_writes_merged+=($(getStats "$aux"))
 
     #disk_vmstat writes_ms
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($1 ~ /sda/){print $9}}' $1/disk_vmstat.txt)
-    disk_vmstat_writes_ms+=$(getStats "$aux")
-    disk_vmstat_writes_ms+=$'\n'
+    disk_vmstat_writes_ms+=($(getStats "$aux"))
 
     #disk_vmstat io_cur
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($1 ~ /sda/){print $10}}' $1/disk_vmstat.txt)
-    disk_vmstat_io_cur+=$(getStats "$aux")
-    disk_vmstat_io_cur+=$'\n'
+    disk_vmstat_io_cur+=($(getStats "$aux"))
 
     #disk_vmstat io_sec
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($1 ~ /sda/){print $11}}' $1/disk_vmstat.txt)
-    disk_vmstat_io_sec+=$(getStats "$aux")
-    disk_vmstat_io_sec+=$'\n'
+    disk_vmstat_io_sec+=($(getStats "$aux"))
 
     #mem_pidstat %mem
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($8 ~ /(ft|lu-mz)\.(A|B)\.(x|\d+)/){print $7}}' $1/mem_pidstat.txt)
-    mem_pidstat_mem+=$(getStats "$aux")
-    mem_pidstat_mem+=$'\n'
+    mem_pidstat_mem+=($(getStats "$aux"))
 
     #mem_sar %memused
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($4 ~ /[0-9]+\.[0-9]+/){print $4}}' $1/mem_sar.txt)
-    mem_sar_memused+=$(getStats "$aux")
-    mem_sar_memused+=$'\n'
+    mem_sar_memused+=($(getStats "$aux"))
 
     #mem_vmstat swpd
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($4 ~ /[0-9]+/){print $4}}' $1/mem_vmstat.txt)
-    mem_vmstat_swpd+=$(getStats "$aux")
-    mem_vmstat_swpd+=$'\n'
+    mem_vmstat_swpd+=($(getStats "$aux"))
 
     #mem_vmstat free
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($5 ~ /[0-9]+/){print $5}}' $1/mem_vmstat.txt)
-    mem_vmstat_free+=$(getStats "$aux")
-    mem_vmstat_free+=$'\n'
+    mem_vmstat_free+=($(getStats "$aux"))
     
     #mem_vmstat buff
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($6 ~ /[0-9]+/){print $6}}' $1/mem_vmstat.txt)
-    mem_vmstat_buff+=$(getStats "$aux")
-    mem_vmstat_buff+=$'\n'
+    mem_vmstat_buff+=($(getStats "$aux"))
 
     #mem_vmstat cache
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($7 ~ /[0-9]+/){print $7}}' $1/mem_vmstat.txt)
-    mem_vmstat_cache+=$(getStats "$aux")
-    mem_vmstat_cache+=$'\n'
+    mem_vmstat_cache+=($(getStats "$aux"))
 
     #mem_vmstat si
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($8 ~ /[0-9]+/){print $8}}' $1/mem_vmstat.txt)
-    mem_vmstat_si+=$(getStats "$aux")
-    mem_vmstat_si+=$'\n'
+    mem_vmstat_si+=($(getStats "$aux"))
 
     #mem_vmstat so
     aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($9 ~ /[0-9]+/){print $9}}' $1/mem_vmstat.txt)
-    mem_vmstat_so+=$(getStats "$aux")
-    mem_vmstat_so+=$'\n'
+    mem_vmstat_so+=($(getStats "$aux"))
+    mem_vmstat_so+=(' ')
 
     #network_saturation rxdrop/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $6}}' $1/network_saturation_sar.txt)
-    network_saturation_rxdrop+=$(getStats "$aux")
-    network_saturation_rxdrop+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $6}}' $1/network_saturation_sar.txt)
+    network_saturation_rxdrop+=($(getStats "$aux"))
 
     #network_saturation txdrop/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $7}}' $1/network_saturation_sar.txt)
-    network_saturation_txdrop+=$(getStats "$aux")
-    network_saturation_txdrop+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $7}}' $1/network_saturation_sar.txt)
+    network_saturation_txdrop+=($(getStats "$aux"))
 
     #network_saturation rxfifo/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $10}}' $1/network_saturation_sar.txt)
-    network_saturation_rxfifo+=$(getStats "$aux")
-    network_saturation_rxfifo+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $10}}' $1/network_saturation_sar.txt)
+    network_saturation_rxfifo+=($(getStats "$aux"))
 
     #network_saturation txfifo/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $11}}' $1/network_saturation_sar.txt)
-    network_saturation_txfifo+=$(getStats "$aux")
-    network_saturation_txfifo+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $11}}' $1/network_saturation_sar.txt)
+    network_saturation_txfifo+=($(getStats "$aux"))
 
     #network_usage rxpck/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $3}}' $1/network_usage_sar.txt)
-    network_usage_rxpck+=$(getStats "$aux")
-    network_usage_rxpck+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $3}}' $1/network_usage_sar.txt)
+    network_usage_rxpck+=($(getStats "$aux"))
 
     #network_usage txpck/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $4}}' $1/network_usage_sar.txt)
-    network_usage_txpck+=$(getStats "$aux")
-    network_usage_txpck+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $4}}' $1/network_usage_sar.txt)
+    network_usage_txpck+=($(getStats "$aux"))
 
     #network_usage rxkB/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $5}}' $1/network_usage_sar.txt)
-    network_usage_rxkB+=$(getStats "$aux")
-    network_usage_rxkB+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $5}}' $1/network_usage_sar.txt)
+    network_usage_rxkB+=($(getStats "$aux"))
 
     #network_usage txkB/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $6}}' $1/network_usage_sar.txt)
-    network_usage_txkB+=$(getStats "$aux")
-    network_usage_txkB+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $6}}' $1/network_usage_sar.txt)
+    network_usage_txkB+=($(getStats "$aux"))
 
     #network_usage rxmcst/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth1/){print $9}}' $1/network_usage_sar.txt)
-    network_usage_rxmcst+=$(getStats "$aux")
-    network_usage_rxmcst+=$'\n'
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $9}}' $1/network_usage_sar.txt)
+    network_usage_rxmcst+=($(getStats "$aux"))
 }
 
 function processFlags(){
@@ -190,12 +186,6 @@ function processFlags(){
     processOneCase "$2/INTEL_F_0_$1_results" 
 }
 
-function printRes(){
-    echo "$1" >> $resFolder
-    echo "$2" >> $resFolder
-    echo "" >> $resFolder
-}
-
 function processClass(){
     processFlags "A" "NPB3.3-SER"
     processFlags "B" "NPB3.3-SER"
@@ -204,37 +194,15 @@ function processClass(){
     processFlags "A" "NPB3.3-MPI"
     processFlags "B" "NPB3.3-MPI"
 
-    printRes "%CPU:" "$cpu_pidstat_cpu"
-    printRes "%iowait:" "$cpu_sar_iowait"
-    printRes "%idle:" "$cpu_sar_idle"
-    printRes "%system:" "$cpu_sar_system"
-    printRes "%user:" "$cpu_sar_user"
-    printRes "Blk_read/s:" "$disk_iostat_Blk_read"
-    printRes "Blk_wrtn/s:" "$disk_iostat_Blk_wrtn"
-    printRes "reads_merged:" "$disk_vmstat_reads_merged"
-    printRes "reads_ms:" "$disk_vmstat_reads_ms"
-    printRes "writes_merged:" "$disk_vmstat_writes_merged"
-    printRes "writes_ms:" "$disk_vmstat_writes_ms"
-    printRes "io_cur:" "$disk_vmstat_io_cur"
-    printRes "io_sec:" "$disk_vmstat_io_sec"
-    printRes "%MEM:" "$mem_pidstat_mem"
-    printRes "%memused:" "$mem_sar_memused"
-    printRes "swpd:" "$mem_vmstat_swpd"
-    printRes "free:" "$mem_vmstat_free"
-    printRes "buff:" "$mem_vmstat_buff"
-    printRes "cache:" "$mem_vmstat_cache"
-    printRes "si:" "$mem_vmstat_si"
-    printRes "so:" "$mem_vmstat_so"
-    printRes "rxdrop/s:" "$network_saturation_rxdrop"
-    printRes "txdrop/s:" "$network_saturation_txdrop"
-    printRes "rxfifo/s:" "$network_saturation_rxfifo"
-    printRes "txfifo/s:" "$network_saturation_txfifo"
-    printRes "rxpck/s:" "$network_usage_rxpck"
-    printRes "txpck/s:" "$network_usage_txpck"
-    printRes "rxkB/s:" "$network_usage_rxkB"
-    printRes "txkB/s:" "$network_usage_txkB"
-    printRes "rxmcst/s:" "$network_usage_rxmcst"
+    echo -e "%CPU:" '\t' "%iowait:" '\t' "%idle:" '\t' "%system:" '\t' "%user:" '\t' "Blk_read/s:" '\t' "Blk_wrtn/s:" '\t' "reads_merged:" '\t' "reads_ms:" '\t' "writes_merged:" '\t' "writes_ms:" '\t' "io_cur:" '\t' "io_sec:" '\t' "%MEM:" '\t' "%memused:" '\t' "swpd:" '\t' "free:" '\t' "buff:" '\t' "cache:" '\t' "si:" '\t' "so:" '\t' "rxdrop/s:" '\t' "txdrop/s:" '\t' "rxfifo/s:" '\t' "txfifo/s:" '\t' "rxpck/s:" '\t' "txpck/s:" '\t' "rxkB/s:" '\t' "txkB/s:" '\t' "rxmcst/s:" > $resFolder
+
+    length=${#cpu_pidstat_cpu[@]}
+
+    for (( i=0; i<${length}; i++ ));
+    do
+        echo -e ${cpu_pidstat_cpu[$i]} '\t' ${cpu_sar_iowait[$i]} '\t' ${cpu_sar_idle[$i]} '\t' ${cpu_sar_system[$i]} '\t' ${cpu_sar_user[$i]} '\t' ${disk_iostat_Blk_read[$i]} '\t' ${disk_iostat_Blk_wrtn[$i]} '\t' ${disk_vmstat_reads_merged[$i]} '\t' ${disk_vmstat_reads_ms[$i]} '\t' ${disk_vmstat_writes_merged[$i]} '\t' ${disk_vmstat_writes_ms[$i]} '\t' ${disk_vmstat_io_cur[$i]} '\t' ${disk_vmstat_io_sec[$i]} '\t' ${mem_pidstat_mem[$i]} '\t' ${mem_sar_memused[$i]} '\t' ${mem_vmstat_swpd[$i]} '\t' ${mem_vmstat_free[$i]} '\t' ${mem_vmstat_buff[$i]} '\t' ${mem_vmstat_cache[$i]} '\t' ${mem_vmstat_si[$i]} '\t' ${mem_vmstat_so[$i]} '\t' ${network_saturation_rxdrop[$i]} '\t' ${network_saturation_txdrop[$i]} '\t' ${network_saturation_rxfifo[$i]} '\t' ${network_saturation_txfifo[$i]} '\t' ${network_usage_rxpck[$i]} '\t' ${network_usage_txpck[$i]} '\t' ${network_usage_rxkB[$i]} '\t' ${network_usage_txkB[$i]} '\t' ${network_usage_rxmcst[$i]} >> $resFolder
+    done
 }
 
-printInfo
+initiate
 processClass

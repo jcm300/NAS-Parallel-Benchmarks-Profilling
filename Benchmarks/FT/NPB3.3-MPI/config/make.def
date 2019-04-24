@@ -32,7 +32,7 @@
 ifeq ($(COMPILER_T), INTEL)
     MPIF77 = mpiifort
 else
-    MPIF77 = mpifort
+    MPIF77 = mpif77
 endif
 
 #---------------------------------------------------------------------------
