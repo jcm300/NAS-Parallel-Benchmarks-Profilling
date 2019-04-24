@@ -141,39 +141,39 @@ function processOneCase(){
     mem_vmstat_so+=(' ')
 
     #network_saturation rxdrop/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $6}}' $1/network_saturation_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $6}}' $1/network_saturation_sar.txt)
     network_saturation_rxdrop+=($(getStats "$aux"))
 
     #network_saturation txdrop/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $7}}' $1/network_saturation_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $7}}' $1/network_saturation_sar.txt)
     network_saturation_txdrop+=($(getStats "$aux"))
 
     #network_saturation rxfifo/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $10}}' $1/network_saturation_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $10}}' $1/network_saturation_sar.txt)
     network_saturation_rxfifo+=($(getStats "$aux"))
 
     #network_saturation txfifo/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $11}}' $1/network_saturation_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $11}}' $1/network_saturation_sar.txt)
     network_saturation_txfifo+=($(getStats "$aux"))
 
     #network_usage rxpck/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $3}}' $1/network_usage_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $3}}' $1/network_usage_sar.txt)
     network_usage_rxpck+=($(getStats "$aux"))
 
     #network_usage txpck/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $4}}' $1/network_usage_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $4}}' $1/network_usage_sar.txt)
     network_usage_txpck+=($(getStats "$aux"))
 
     #network_usage rxkB/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $5}}' $1/network_usage_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $5}}' $1/network_usage_sar.txt)
     network_usage_rxkB+=($(getStats "$aux"))
 
     #network_usage txkB/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $6}}' $1/network_usage_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $6}}' $1/network_usage_sar.txt)
     network_usage_txkB+=($(getStats "$aux"))
 
     #network_usage rxmcst/s
-    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /eth0/){print $9}}' $1/network_usage_sar.txt)
+    aux=$(awk 'BEGIN {RS="\n"; FS="\\s+"} $0 != "" {if($2 ~ /(eth|myri)\d/){print $9}}' $1/network_usage_sar.txt)
     network_usage_rxmcst+=($(getStats "$aux"))
 }
 
