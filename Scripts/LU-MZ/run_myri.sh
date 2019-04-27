@@ -48,13 +48,12 @@ function bench(){
     if [[ $1 == "INTEL" ]]; then
          module load intel/openmpi_mx/1.8.2
          source /share/apps/intel/parallel_studio_xe_2019/compilers_and_libraries_2019/linux/bin/compilervars.sh intel64
-         make COMPILER_T=$1 OPT=$2 NPROCS=8 CLASS=$3
     else
          module load gcc/5.3.0
          module load gnu/openmpi_mx/1.8.2
-         make COMPILER_T=$1 OPT=$2 NPROCS=8 CLASS=$3
     fi
 
+    make COMPILER_T=$1 OPT=$2 NPROCS=8 CLASS=$3
     getB $1 $2 $3 $4 $5
 
     cd ..
